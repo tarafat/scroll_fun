@@ -49,10 +49,10 @@ class IssueWidget extends StatelessWidget {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: Provider.of<DataProvider>(context).myList.length + 1,
+      itemCount: Provider.of<DataProvider>(context).issueList.length + 1,
       itemBuilder: (context, index) {
         final dataProvider = Provider.of<DataProvider>(context, listen: false);
-        if (index < dataProvider.myList.length) {
+        if (index < dataProvider.issueList.length) {
           // Display issue details
           return Container(
             padding: const EdgeInsets.all(8.0),
@@ -64,10 +64,10 @@ class IssueWidget extends StatelessWidget {
                     SizedBox(
                         width: MediaQuery.of(context).size.width * .5,
                         child: Text(
-                          dataProvider.myList[index].title,
+                          dataProvider.issueList[index].title,
                           maxLines: 1,
                         )),
-                    Text(date12format(dataProvider.myList[index].createdAt)),
+                    Text(date12format(dataProvider.issueList[index].createdAt)),
                   ],
                 ),
                 Row(
@@ -76,11 +76,11 @@ class IssueWidget extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * .5,
                       child: Text(
-                        dataProvider.myList[index].body,
+                        dataProvider.issueList[index].body,
                         maxLines: 1,
                       ),
                     ),
-                    Text(dataProvider.myList[index].user.login),
+                    Text(dataProvider.issueList[index].user.login),
                   ],
                 ),
                 Row(
@@ -88,7 +88,8 @@ class IssueWidget extends StatelessWidget {
                     Wrap(
                       spacing: 8.0,
                       runSpacing: 8.0,
-                      children: dataProvider.myList[index].labels!.map((value) {
+                      children:
+                          dataProvider.issueList[index].labels!.map((value) {
                         String colorCode = "FF" "${value.color!}";
                         Color myColor = Color(int.parse(colorCode, radix: 16));
                         // Display label as a chip
@@ -144,7 +145,7 @@ class SerachWidget extends StatelessWidget {
               dataProvider.textController.clear();
               dataProvider.page = 0;
               dataProvider.pagesRemaining = true;
-              dataProvider.myList.clear();
+              dataProvider.issueList.clear();
               dataProvider
                   .getPaginatedData(dataProvider.textController.text)
                   .customeThen(context);
@@ -160,7 +161,7 @@ class SerachWidget extends StatelessWidget {
               Provider.of<DataProvider>(context, listen: false);
           dataProvider.page = 0;
           dataProvider.pagesRemaining = true;
-          dataProvider.myList.clear();
+          dataProvider.issueList.clear();
           dataProvider
               .getPaginatedData(dataProvider.textController.text)
               .customeThen(context);
@@ -197,7 +198,7 @@ class LabelChipsWidget extends StatelessWidget {
                   "${dataProvider.textController.text}${value.name!},";
               dataProvider.page = 0;
               dataProvider.pagesRemaining = true;
-              dataProvider.myList.clear();
+              dataProvider.issueList.clear();
               dataProvider
                   .getPaginatedData(dataProvider.textController.text)
                   .customeThen(context);

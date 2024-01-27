@@ -16,7 +16,7 @@ class DataProvider extends ChangeNotifier {
   TextEditingController textController = TextEditingController();
 
   // List to store fetched issues
-  List<Issue> myList = [];
+  List<Issue> issueList = [];
 
   // Current page number for pagination
   int page = 0;
@@ -86,12 +86,11 @@ class DataProvider extends ChangeNotifier {
       // Check if data is already loading
       if (isLoading == true) return;
 
-      // Set loading flag to true and increment page number
-      isLoading = true;
-      page++;
-
       // Check if more pages are available
       if (pagesRemaining) {
+        // Set loading flag to true and increment page number
+        isLoading = true;
+        page++;
         // Make HTTP request to get paginated issues
         Response response = await getHttp(Endpoints.getIssues(
             AppConstanst.owner,
@@ -99,12 +98,13 @@ class DataProvider extends ChangeNotifier {
             AppConstanst.perPage,
             page,
             filter ?? ""));
+        isLoading = false;
 
         if (response.statusCode == 200) {
           // Parse and convert data to Issue objects
           List parsedData = response.data;
           for (var element in parsedData) {
-            myList.add(Issue.fromJson(element));
+            issueList.add(Issue.fromJson(element));
           }
 
           // Update pagesRemaining based on link header
@@ -113,9 +113,10 @@ class DataProvider extends ChangeNotifier {
               linkHeader.toString().contains('rel="next"');
 
           // Reset loading flag, notify listeners
-          isLoading = false;
+
           notifyListeners();
         } else {
+          isLoading = false;
           // Handle HTTP error and throw corresponding failure
           throw DataSource.DEFAULT.getFailure();
         }
